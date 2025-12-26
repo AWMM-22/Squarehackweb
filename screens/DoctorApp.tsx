@@ -5,7 +5,9 @@ import {
   BarChart3, Users, PhoneCall, FileText, 
   Search, Bell, Activity, ArrowRight,
   TrendingUp, AlertCircle, Trash2, Plus, Home, Menu, X, Play, Camera, Clipboard,
-  MapPin, ArrowLeft, Package, Map as MapIcon, Stethoscope
+  MapPin, ArrowLeft, Package, Map as MapIcon, Stethoscope, Clock,
+  // Fix: Added missing icons
+  CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { RiskLevel } from '../types';
 import { ArogyaLogo } from '../components/Logo';
@@ -27,69 +29,95 @@ const DoctorApp: React.FC<{ onExit: () => void }> = ({ onExit }) => {
   };
 
   const renderDashboard = () => (
-    <div className="p-4 lg:p-8 space-y-6 max-w-7xl mx-auto animate-in fade-in duration-500">
-      <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-6">
-          <div className="w-16 h-16 bg-blue-600 rounded-[1.5rem] flex items-center justify-center text-white shadow-xl">
-             {/* Fix: Added Stethoscope to lucide-react imports */}
-             <Stethoscope size={32} />
+    <div className="p-6 lg:p-12 space-y-10 max-w-7xl mx-auto animate-in fade-in duration-700">
+      {/* Premium Header Profile Card */}
+      <div className="bg-white p-10 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-50 flex flex-col md:flex-row items-center justify-between group">
+        <div className="flex items-center space-x-10 text-center md:text-left flex-col md:flex-row">
+          <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-800 rounded-[2rem] flex items-center justify-center text-white shadow-2xl group-hover:scale-105 transition-transform">
+             <Stethoscope size={48} />
           </div>
-          <div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Welcome, Dr. Sharma</h2>
-            <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mt-1">District Hospital • PHC Rampur</p>
+          <div className="mt-4 md:mt-0">
+            <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-tight">Welcome, Dr. Sharma</h2>
+            <div className="flex items-center justify-center md:justify-start space-x-3 mt-3">
+               <span className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.25em]">District Hospital</span>
+               <span className="bg-slate-50 text-slate-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.25em]">Rampur PHC</span>
+            </div>
           </div>
         </div>
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden lg:flex items-center space-x-8 border-l border-slate-100 pl-10 ml-10">
            <div className="text-right">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Shift</p>
-              <p className="font-bold text-slate-800">08:00 AM - 04:00 PM</p>
+              <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Current Shift</p>
+              <p className="font-black text-slate-700 text-lg flex items-center mt-1"><Clock className="w-4 h-4 mr-2 text-blue-600" /> 08:00 - 16:00</p>
+           </div>
+           <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
            </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 space-y-6">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:border-blue-500 transition-all">
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">In Queue</p>
-              <p className="text-3xl font-black text-slate-900 mt-1">12</p>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-8 space-y-10">
+          {/* Detailed Statistics Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-50 group hover:shadow-xl hover:border-blue-100 transition-all cursor-default">
+              <div className="flex justify-between items-start">
+                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">In Waiting</p>
+                 <Users className="w-4 h-4 text-blue-500" />
+              </div>
+              <p className="text-5xl font-black text-slate-900 mt-2 tracking-tighter leading-none">12</p>
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-4 flex items-center">
+                 <TrendingUp className="w-3 h-3 mr-1 text-green-500" /> Avg. 12m wait time
+              </p>
             </div>
-            <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:border-green-500 transition-all">
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Completed</p>
-              <p className="text-3xl font-black text-green-600 mt-1">8</p>
+            <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-50 group hover:shadow-xl hover:border-green-100 transition-all cursor-default">
+              <div className="flex justify-between items-start">
+                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">Completed</p>
+                 <CheckCircle2 className="w-4 h-4 text-green-500" />
+              </div>
+              <p className="text-5xl font-black text-green-600 mt-2 tracking-tighter leading-none">08</p>
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-4">Total Consultation Revenue: ₹400</p>
             </div>
-            <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:border-red-500 transition-all">
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Urgent</p>
-              <p className="text-3xl font-black text-red-600 mt-1">3</p>
+            <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-50 group hover:shadow-xl hover:border-red-100 transition-all cursor-default relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5"><AlertCircle size={80} /></div>
+              <div className="flex justify-between items-start">
+                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">High Risk</p>
+                 <AlertTriangle className="w-4 h-4 text-red-500 animate-pulse" />
+              </div>
+              <p className="text-5xl font-black text-red-600 mt-2 tracking-tighter leading-none">03</p>
+              <p className="text-[10px] font-bold text-red-400 uppercase tracking-widest mt-4">Prioritized in queue</p>
             </div>
           </div>
 
-          <section className="space-y-4">
-            <h2 className="text-xl font-black flex items-center text-slate-900 tracking-tight px-2">
-              <AlertCircle className="w-5 h-5 mr-2 text-red-600" /> Current Queue
-            </h2>
-            <div className="space-y-3">
+          <section className="space-y-6">
+            <div className="flex justify-between items-end px-4">
+              <h2 className="text-2xl font-black flex items-center text-slate-900 tracking-tight">
+                <Users className="w-6 h-6 mr-3 text-blue-600" /> Patient Consultation Queue
+              </h2>
+              <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors">History View →</button>
+            </div>
+            
+            <div className="space-y-4">
               {mockQueue.map(item => (
-                <Card key={item.id} borderColor={item.risk === RiskLevel.HIGH ? '#D32F2F' : '#F57C00'} className="p-6 border-none shadow-sm hover:shadow-xl cursor-pointer transition-all active:scale-[0.99] rounded-[2rem] bg-white group">
-                  <div className="flex justify-between items-center" onClick={() => handleSelectCase(item.id)}>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-black text-lg text-slate-800">{item.name}, {item.age}F</h3>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${item.risk === RiskLevel.HIGH ? 'bg-red-50 text-red-600' : 'bg-orange-50 text-orange-600'}`}>{item.risk} RISK</span>
-                      </div>
-                      <p className="text-sm text-slate-500 mt-1 truncate font-medium">{item.symptom}</p>
-                      <div className="flex items-center mt-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        <Users className="w-3.5 h-3.5 mr-1.5" /> ASHA: {item.asha}
-                      </div>
+                <Card key={item.id} borderColor={item.risk === RiskLevel.HIGH ? '#D32F2F' : '#F57C00'} className="p-8 border-none shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-2xl cursor-pointer transition-all active:scale-[0.99] rounded-[2.5rem] bg-white group flex flex-col sm:flex-row sm:items-center justify-between">
+                  <div className="flex-1 min-w-0" onClick={() => handleSelectCase(item.id)}>
+                    <div className="flex items-center space-x-3">
+                      <h3 className="font-black text-2xl text-slate-800 tracking-tight leading-none group-hover:text-blue-600 transition-colors">{item.name}, {item.age}F</h3>
+                      <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${item.risk === RiskLevel.HIGH ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100'}`}>{item.risk} RISK</span>
                     </div>
-                    <div className="flex space-x-2 ml-4">
-                      <button className="p-4 bg-blue-50 text-blue-600 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all">
-                        <PhoneCall size={20} />
-                      </button>
-                      <button className="hidden sm:block p-4 bg-slate-50 text-slate-400 rounded-2xl group-hover:text-slate-900 transition-all">
-                        <ArrowRight size={20} />
-                      </button>
+                    <p className="text-sm font-bold text-slate-400 mt-2 leading-relaxed italic">" {item.symptom} "</p>
+                    <div className="flex items-center mt-5 text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
+                      <div className="w-6 h-6 bg-slate-50 rounded-lg flex items-center justify-center mr-3 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all"><Users size={12} /></div>
+                      Ref by: ASHA {item.asha} • Ward 3
                     </div>
+                  </div>
+                  
+                  <div className="flex space-x-3 mt-6 sm:mt-0 sm:ml-10">
+                    <button className="p-5 bg-blue-50 text-blue-600 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm active:scale-90">
+                      <PhoneCall size={24} />
+                    </button>
+                    <button className="hidden sm:flex p-5 bg-slate-50 text-slate-300 rounded-2xl group-hover:bg-slate-900 group-hover:text-white transition-all active:scale-90">
+                      <ArrowRight size={24} />
+                    </button>
                   </div>
                 </Card>
               ))}
@@ -97,251 +125,194 @@ const DoctorApp: React.FC<{ onExit: () => void }> = ({ onExit }) => {
           </section>
         </div>
 
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-2xl space-y-6 relative overflow-hidden">
-             <div className="absolute -top-10 -right-10 opacity-5">
-               <TrendingUp size={200} />
+        {/* Sidebar Intelligence Panel */}
+        <div className="lg:col-span-4 space-y-8">
+          <div className="bg-slate-900 text-white p-10 rounded-[3.5rem] shadow-2xl space-y-8 relative overflow-hidden group">
+             <div className="absolute -top-10 -right-10 opacity-5 group-hover:rotate-12 transition-transform duration-1000">
+               <TrendingUp size={240} />
              </div>
-             <div className="relative z-10 space-y-6">
+             <div className="relative z-10 space-y-8">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-black text-xl tracking-tight flex items-center"><TrendingUp className="mr-3 text-red-400" /> Monitoring</h3>
-                  <span className="bg-slate-800 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">Live</span>
+                  <h3 className="font-black text-2xl tracking-tight flex items-center"><Activity className="mr-3 text-red-500" /> Surveillance</h3>
+                  <div className="bg-red-500/20 px-4 py-1 rounded-full text-[9px] font-black tracking-widest uppercase text-red-400 border border-red-500/30">Active Outbreak</div>
                 </div>
-                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 shadow-inner">
-                    <p className="text-red-400 font-black text-3xl tracking-tighter">↑ 40% Spike</p>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Gastroenteritis (Ward 3)</p>
-                </div>
-                <button onClick={() => setActiveView('MAP')} className="w-full bg-white text-slate-900 py-4 rounded-2xl text-sm font-black shadow-lg hover:bg-slate-100 transition-all uppercase tracking-widest">Open Map Analysis</button>
-             </div>
-          </div>
-
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-             <div className="flex justify-between items-center mb-6">
-                <h3 className="font-black text-slate-900 flex items-center uppercase tracking-widest text-xs"><Package className="mr-2 text-orange-500" /> PHC Stock</h3>
-                <button onClick={() => setActiveView('STOCK')} className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Inventory</button>
-             </div>
-             <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-slate-600">ORS Packets</span>
-                  <span className="text-xs font-black text-red-600 bg-red-50 px-2 py-0.5 rounded uppercase">CRITICAL: 15</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-slate-600">PCM 500mg</span>
-                  <span className="text-xs font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded uppercase">LOW: 45</span>
-                </div>
-             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderMap = () => (
-    <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-3xl font-black text-slate-900 tracking-tighter flex items-center">
-          <MapIcon className="mr-3 text-red-600" /> Disease Heatmap
-        </h2>
-        <div className="flex gap-2">
-          <button className="bg-slate-900 text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest">WARD VIEW</button>
-          <button className="bg-white border-2 border-slate-100 text-slate-600 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest">VILLAGE VIEW</button>
-        </div>
-      </div>
-      
-      <div className="bg-slate-200 aspect-[16/9] lg:aspect-[21/9] rounded-[3.5rem] shadow-inner relative overflow-hidden flex items-center justify-center border-4 border-white">
-        <div className="absolute inset-0 bg-[url('https://api.placeholder.com/1200/600')] bg-cover opacity-20 grayscale" />
-        <div className="relative w-full h-full">
-           <div className="absolute top-1/4 left-1/3 w-20 h-20 bg-red-500/30 rounded-full animate-ping" />
-           <div className="absolute top-1/4 left-1/3 w-8 h-8 bg-red-600 rounded-full border-4 border-white shadow-xl" />
-           <div className="absolute bottom-1/3 right-1/4 w-12 h-12 bg-orange-500/30 rounded-full animate-pulse" />
-           <div className="absolute bottom-1/3 right-1/4 w-6 h-6 bg-orange-500 rounded-full border-2 border-white" />
-        </div>
-        
-        <div className="absolute bottom-10 right-10 bg-white p-8 rounded-[2rem] shadow-2xl border border-slate-100 max-w-xs space-y-4">
-           <h4 className="font-black text-slate-900 uppercase tracking-widest text-[10px]">Concentration Legend</h4>
-           <div className="space-y-3">
-             <div className="flex items-center space-x-3 text-xs font-bold text-slate-600"><div className="w-3 h-3 bg-red-600 rounded-full" /> <span>High (15+ cases)</span></div>
-             <div className="flex items-center space-x-3 text-xs font-bold text-slate-600"><div className="w-3 h-3 bg-orange-500 rounded-full" /> <span>Moderate (5-14 cases)</span></div>
-             <div className="flex items-center space-x-3 text-xs font-bold text-slate-600"><div className="w-3 h-3 bg-green-500 rounded-full" /> <span>Low (1-4 cases)</span></div>
-           </div>
-        </div>
-      </div>
-
-      <Card className="p-10 rounded-[2.5rem] shadow-sm border-none bg-white">
-        <h3 className="font-black text-xl mb-6 text-slate-900">Recommended Intervention</h3>
-        <div className="space-y-4">
-          <div className="flex items-start space-x-4 p-5 bg-red-50 rounded-2xl">
-            <span className="bg-red-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black shrink-0 mt-1">1</span>
-            <p className="font-bold text-slate-800">Immediately deploy additional ORS and Zinc batches to Ward 3 ASHA teams.</p>
-          </div>
-          <div className="flex items-start space-x-4 p-5 bg-blue-50 rounded-2xl">
-            <span className="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black shrink-0 mt-1">2</span>
-            <p className="font-bold text-slate-800">Initiate mandatory water source chlorination testing in Rampur Village North sector.</p>
-          </div>
-        </div>
-      </Card>
-    </div>
-  );
-
-  const renderStockDashboard = () => (
-    <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="flex justify-between items-end mb-4">
-        <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">PHC Inventory Control</h2>
-          <p className="text-slate-400 font-bold uppercase tracking-widest text-xs mt-1">Medical Supply Chain Tracking</p>
-        </div>
-        <Button variant="info" icon={Plus} className="w-auto px-8 rounded-full py-3.5 shadow-blue-200 shadow-xl">ADD STOCK</Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { title: 'Critical', count: 3, color: 'bg-red-50 text-red-600 border-red-100' },
-          { title: 'Low Stock', count: 8, color: 'bg-orange-50 text-orange-600 border-orange-100' },
-          { title: 'Near Expiry', count: 12, color: 'bg-yellow-50 text-yellow-600 border-yellow-100' },
-          { title: 'In Stock', count: 156, color: 'bg-green-50 text-green-600 border-green-100' }
-        ].map(stat => (
-          <div key={stat.title} className={`${stat.color} p-8 rounded-[2rem] border-2 flex flex-col justify-between shadow-sm hover:shadow-md transition-all`}>
-             <span className="font-black uppercase tracking-widest text-[10px] opacity-70">{stat.title}</span>
-             <span className="text-4xl font-black mt-2">{stat.count}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-slate-50/50 border-b">
-            <tr>
-              <th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Medicine & Strength</th>
-              <th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Stock Status</th>
-              <th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Expiry</th>
-              <th className="p-8 text-[10px] font-black uppercase tracking-widest text-slate-400">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {[
-              { name: 'ORS Packets (75g)', stock: 15, total: 200, exp: '12/2026', status: 'CRITICAL' },
-              { name: 'Paracetamol 500mg', stock: 45, total: 500, exp: '10/2026', status: 'LOW' },
-              { name: 'Amoxicillin 250mg', stock: 120, total: 150, exp: '05/2026', status: 'OK' },
-              { name: 'Iron & Folic Acid', stock: 400, total: 1000, exp: '08/2026', status: 'OK' }
-            ].map(med => (
-              <tr key={med.name} className="hover:bg-slate-50/50 transition-colors">
-                <td className="p-8 font-black text-slate-800">{med.name}</td>
-                <td className="p-8">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                      <div className={`h-full ${med.status === 'CRITICAL' ? 'bg-red-500' : med.status === 'LOW' ? 'bg-orange-500' : 'bg-green-500'}`} style={{ width: `${(med.stock/med.total)*100}%` }} />
+                
+                <div className="space-y-4">
+                  <div className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-inner group-hover:bg-white/10 transition-colors">
+                    <p className="text-red-400 font-black text-4xl tracking-tighter">↑ 40%</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mt-2">Gastroenteritis Spike (Ward 3)</p>
+                    <div className="mt-6 flex gap-2">
+                       <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Recommended: Water Chlorination</p>
                     </div>
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded ${med.status === 'CRITICAL' ? 'text-red-600 bg-red-50' : med.status === 'LOW' ? 'text-orange-600 bg-orange-50' : 'text-green-600 bg-green-50'}`}>{med.stock}/{med.total}</span>
                   </div>
-                </td>
-                <td className="p-8 font-bold text-slate-500 text-sm tracking-widest">{med.exp}</td>
-                <td className="p-8">
-                  <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">REORDER</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                
+                <button 
+                  onClick={() => setActiveView('MAP')} 
+                  className="w-full bg-white text-slate-900 py-5 rounded-[1.5rem] text-xs font-black shadow-xl hover:bg-slate-100 transition-all uppercase tracking-[0.2em] active:scale-95 flex items-center justify-center"
+                >
+                  <MapIcon className="mr-3 w-4 h-4" /> Open Outbreak Map
+                </button>
+             </div>
+          </div>
+
+          <Card className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-50 relative overflow-hidden group">
+             <div className="absolute -bottom-10 -right-10 p-4 opacity-5 group-hover:-translate-x-5 transition-transform"><Package size={140} /></div>
+             <div className="flex justify-between items-center mb-10 relative z-10">
+                <h3 className="font-black text-slate-900 flex items-center uppercase tracking-widest text-xs leading-none">
+                  <div className="w-8 h-8 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center mr-3"><Package size={16} /></div>
+                  Primary Health Stock
+                </h3>
+                <button onClick={() => setActiveView('STOCK')} className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">Manage Kit</button>
+             </div>
+             
+             <div className="space-y-6 relative z-10">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">ORS Packets</span>
+                    <span className="text-[10px] font-black text-red-600 bg-red-50 px-3 py-1 rounded-full uppercase">Critical: 15</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                     <div className="h-full bg-red-500 w-[15%]" />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Paracetamol 500</span>
+                    <span className="text-[10px] font-black text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase">Low: 45</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+                     <div className="h-full bg-orange-500 w-[35%]" />
+                  </div>
+                </div>
+             </div>
+             
+             <div className="mt-10 pt-8 border-t border-slate-50">
+                <button className="text-[10px] font-black text-slate-400 hover:text-slate-900 transition-colors flex items-center uppercase tracking-widest">
+                   <AlertCircle size={14} className="mr-2" /> 2 Items Expiring this month
+                </button>
+             </div>
+          </Card>
+        </div>
       </div>
     </div>
   );
 
   const renderCaseDetail = () => (
-    <div className="max-w-7xl mx-auto p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in slide-in-from-right-10 duration-500 pb-20">
-      <div className="space-y-8">
-        <div className="flex items-center space-x-6">
-          <div className="w-24 h-24 bg-blue-600 rounded-[2rem] flex items-center justify-center text-white font-black text-4xl shadow-2xl shadow-blue-200">SD</div>
+    <div className="max-w-7xl mx-auto p-6 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 animate-in fade-in slide-in-from-right-20 duration-700 pb-32">
+      {/* LEFT PANEL: Medical History & Vitals */}
+      <div className="space-y-10">
+        <div className="flex items-center space-x-8">
+          <div className="w-28 h-28 bg-gradient-to-br from-blue-600 to-blue-900 rounded-[2.5rem] flex items-center justify-center text-white font-black text-4xl shadow-2xl border-4 border-white">SD</div>
           <div>
-            <h2 className="text-4xl font-black text-slate-900 tracking-tighter leading-none">Sita Devi, 28F</h2>
-            <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-2 flex items-center">
-              <MapPin className="w-4 h-4 mr-2" /> Rampur • Ward 3 • Case #1024
-            </p>
+            <h2 className="text-5xl font-black text-slate-900 tracking-tighter leading-none">Sita Devi, 28F</h2>
+            <div className="flex items-center space-x-3 mt-4">
+               <span className="bg-slate-100 text-slate-500 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center">
+                 <MapPin className="w-3 h-3 mr-2" /> Rampur • Ward 3
+               </span>
+               <span className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Case ID: #1024</span>
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
-          <div className="text-center p-6 bg-red-50 rounded-[2rem] border border-red-100 shadow-sm">
-            <p className="text-[10px] text-red-600 font-black uppercase tracking-[0.2em] mb-1">Temp</p>
-            <p className="text-3xl font-black text-slate-900">101°F</p>
+          <div className="text-center p-8 bg-red-50/50 rounded-[2.5rem] border border-red-100 shadow-sm transition-transform hover:-translate-y-1">
+            <p className="text-[10px] text-red-600 font-black uppercase tracking-[0.3em] mb-2">Current Temp</p>
+            <p className="text-4xl font-black text-slate-900">101°F</p>
           </div>
-          <div className="text-center p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
-            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-1">Blood Pressure</p>
-            <p className="text-2xl font-black text-slate-900">120/80</p>
+          <div className="text-center p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm transition-transform hover:-translate-y-1">
+            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mb-2">Blood Pressure</p>
+            <p className="text-3xl font-black text-slate-900">120/80</p>
           </div>
-          <div className="text-center p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
-            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-1">Heart Rate</p>
-            <p className="text-3xl font-black text-slate-900">88</p>
+          <div className="text-center p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm transition-transform hover:-translate-y-1">
+            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mb-2">Pulse Rate</p>
+            <p className="text-4xl font-black text-slate-900">88</p>
           </div>
         </div>
 
-        <Card className="p-10 bg-slate-50 border-none rounded-[3rem] shadow-inner space-y-6">
-          <div className="flex items-center space-x-4 text-slate-900">
-             <div className="p-3 bg-white rounded-2xl shadow-sm"><Activity size={28} className="text-blue-600" /></div>
-             <h3 className="font-black text-2xl tracking-tight leading-none">AI Health Scan</h3>
-          </div>
-          <p className="text-slate-800 font-black text-3xl leading-tight tracking-tighter">"Likely Upper Respiratory Infection (URI)"</p>
-          <div className="space-y-2">
-            <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner">
-               <div className="h-full bg-blue-600 w-[78%] shadow-[0_0_10px_rgba(37,99,235,0.4)]" />
-            </div>
-            <div className="flex justify-between items-center px-1">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Confidence Score</span>
-              <span className="text-xs font-black text-blue-600">78% ACCURACY</span>
-            </div>
+        {/* AI Chart Insight */}
+        <Card className="p-10 bg-slate-900 text-white border-none rounded-[3.5rem] shadow-2xl space-y-8 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform"><Activity size={160} /></div>
+          <div className="relative z-10 space-y-4">
+             <div className="flex items-center space-x-4">
+                <div className="p-3 bg-blue-600 rounded-2xl shadow-lg"><Activity size={24} className="text-white" /></div>
+                <h3 className="font-black text-2xl tracking-tight leading-none uppercase text-blue-400 tracking-[0.2em]">Arogya Swarm AI Assessment</h3>
+             </div>
+             <p className="text-4xl font-black text-white leading-tight tracking-tighter pt-4">"Likely Upper Respiratory Infection (URI)"</p>
+             <div className="space-y-3 pt-6">
+                <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden shadow-inner border border-white/10">
+                   <div className="h-full bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.6)] w-[78%] transition-all duration-1000" />
+                </div>
+                <div className="flex justify-between items-center px-2">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">AI Diagnostic Confidence Score</span>
+                  <span className="text-xs font-black text-blue-400">78% Match</span>
+                </div>
+             </div>
           </div>
         </Card>
 
-        <section className="space-y-4">
-           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Diagnostic Evidence</h4>
-           <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-8">
-              <div className="flex items-start space-x-5">
-                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shrink-0 shadow-inner"><Clipboard size={24} /></div>
+        {/* Case Narrative */}
+        <section className="space-y-6">
+           <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] px-4">Field Examination Evidence</h4>
+           <div className="bg-white p-10 rounded-[3.5rem] shadow-sm border border-slate-100 space-y-10">
+              <div className="flex items-start space-x-8">
+                <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shrink-0 shadow-inner"><Clipboard size={28} /></div>
                 <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">ASHA Field Note</p>
-                   <p className="text-lg font-bold text-slate-800 leading-snug">"Persistent cough for 3 days. High fever reported at night. No breathing difficulty observed."</p>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">ASHA Narrative • Sunita Rampur</p>
+                   <p className="text-xl font-bold text-slate-800 leading-relaxed italic">"Patient reports a heavy cough for the last 72 hours. High fever develops specifically at night. I observed no chest congestion but redness in the throat."</p>
                 </div>
               </div>
               
-              <div className="bg-slate-50 p-6 rounded-3xl flex items-center justify-between border border-slate-100">
-                <div className="flex items-center space-x-4">
-                   <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl active:scale-95 transition-all"><Play size={20} fill="white" /></div>
-                   <div><p className="text-sm font-black text-slate-900">Patient Symptom Recording</p><p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Recorded via ASHA Mic</p></div>
+              <div className="bg-slate-50/50 p-8 rounded-[2.5rem] flex items-center justify-between border border-slate-100 group">
+                <div className="flex items-center space-x-6">
+                   <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-blue-500"><Play size={24} fill="white" className="ml-1" /></div>
+                   <div>
+                      <p className="text-lg font-black text-slate-900 leading-none">Voice Symptom Note</p>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-2">Duration: 0:45 • Rural Dialect Detected</p>
+                   </div>
                 </div>
-                <button className="text-blue-600 font-black text-xs uppercase tracking-widest border-2 border-blue-100 px-5 py-2.5 rounded-2xl hover:bg-white transition-all">LISTEN</button>
+                <button className="text-blue-600 font-black text-[10px] uppercase tracking-widest border-2 border-blue-100 px-6 py-3 rounded-2xl hover:bg-white transition-all shadow-sm">TRANSCRIPT</button>
               </div>
            </div>
         </section>
       </div>
 
-      <div className="space-y-6">
-        <div className="bg-slate-900 text-white p-12 rounded-[3.5rem] shadow-2xl space-y-12 sticky top-32">
-          <div className="space-y-8">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-8">
-              <h3 className="text-3xl font-black tracking-tight leading-none">Intervention</h3>
-              <div className="bg-slate-800 px-4 py-2 rounded-full flex items-center space-x-2">
-                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Case</span>
+      {/* RIGHT PANEL: Clinical Actions */}
+      <div className="space-y-8">
+        <div className="bg-slate-900 text-white p-12 rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,0.15)] space-y-12 sticky top-32 border border-white/5">
+          <div className="space-y-10">
+            <div className="flex justify-between items-center border-b border-white/10 pb-10">
+              <h3 className="text-4xl font-black tracking-tighter leading-none">Clinical Intervention</h3>
+              <div className="bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-full flex items-center space-x-3">
+                 <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
+                 <span className="text-[10px] font-black text-green-400 uppercase tracking-widest">Active Scan</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-              <Button variant="info" className="py-8 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 active:scale-95" icon={PhoneCall}>VIDEO CONSULT</Button>
-              <Button variant="secondary" className="bg-slate-800 text-white border-none py-8 rounded-[2.5rem] hover:bg-slate-700 active:scale-95 shadow-xl shadow-black/10">VOICE ONLY</Button>
+              <Button variant="info" className="py-10 rounded-[2.5rem] shadow-2xl shadow-blue-600/10 hover:shadow-blue-600/20 active:scale-95 transition-all text-sm uppercase tracking-[0.2em]" icon={PhoneCall}>VIDEO CONSULT</Button>
+              <Button variant="secondary" className="bg-white/5 text-white border-2 border-white/10 py-10 rounded-[2.5rem] hover:bg-white/10 active:scale-95 transition-all shadow-xl text-sm uppercase tracking-[0.2em] shadow-black/10">VOICE ONLY</Button>
             </div>
 
-            <div className="space-y-4 pt-4">
-              <div className="flex justify-between items-center px-1">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Quick Prescription</span>
-                <button className="text-blue-400 font-black text-[10px] uppercase tracking-widest hover:text-white transition-colors flex items-center"><Plus size={14} className="mr-1" /> Add Medicine</button>
+            <div className="space-y-6 pt-6">
+              <div className="flex justify-between items-center px-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Draft E-Prescription</span>
+                <button className="text-blue-400 font-black text-[10px] uppercase tracking-widest hover:text-white transition-colors flex items-center bg-white/5 px-4 py-2 rounded-full border border-white/10"><Plus size={14} className="mr-2" /> New Medicine</button>
               </div>
-              <div className="bg-slate-800/50 p-8 rounded-3xl flex flex-col items-center justify-center border-2 border-dashed border-slate-700 space-y-3">
-                <FileText className="text-slate-700" size={40} />
-                <p className="text-slate-500 font-black text-xs uppercase tracking-widest">No medications drafted</p>
+              <div className="bg-white/5 p-12 rounded-[3rem] flex flex-col items-center justify-center border-2 border-dashed border-white/10 space-y-6 hover:bg-white/[0.07] transition-colors cursor-pointer group">
+                <div className="p-5 bg-white/5 rounded-3xl group-hover:scale-110 transition-transform"><FileText className="text-slate-600 group-hover:text-blue-400 transition-colors" size={48} strokeWidth={1.5} /></div>
+                <div className="text-center">
+                   <p className="text-slate-400 font-black text-xs uppercase tracking-[0.2em]">Patient Medical Chart Empty</p>
+                   <p className="text-slate-600 text-[10px] font-bold mt-2">Add diagnosis or medicines to start drafting</p>
+                </div>
               </div>
             </div>
 
-            <div className="pt-6">
-              <button className="w-full bg-green-600 text-white py-6 rounded-[2.5rem] font-black text-xl shadow-2xl shadow-green-500/20 active:scale-95 hover:bg-green-500 transition-all uppercase tracking-tighter">FINALIZE & SIGN RX</button>
+            <div className="pt-8">
+              <button className="w-full bg-green-600 text-white py-8 rounded-[2.5rem] font-black text-xl shadow-2xl shadow-green-600/30 active:scale-95 hover:bg-green-500 transition-all uppercase tracking-tighter tracking-tight">AUTHORIZE & SIGN RX</button>
+              <p className="text-center text-[9px] font-black text-slate-600 uppercase tracking-widest mt-6 opacity-50 italic">Digital Signature will be applied automatically</p>
             </div>
           </div>
         </div>
@@ -350,75 +321,90 @@ const DoctorApp: React.FC<{ onExit: () => void }> = ({ onExit }) => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 flex overflow-x-hidden selection:bg-blue-100">
-      <nav className={`fixed inset-y-0 left-0 bg-slate-900 text-white transition-all duration-500 z-50 flex flex-col shadow-2xl
-        ${isSidebarOpen ? 'w-72' : 'w-0 lg:w-72'} overflow-hidden`}>
-        <div className="p-10 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <ArogyaLogo className="w-12 h-12" color="#4ade80" />
-            <div className="font-black text-3xl tracking-tighter text-white">AS.</div>
+    <div className="min-h-screen bg-slate-50 flex overflow-x-hidden selection:bg-blue-100 font-sans">
+      <nav className={`fixed inset-y-0 left-0 bg-slate-900 text-white transition-all duration-700 ease-in-out z-50 flex flex-col shadow-2xl
+        ${isSidebarOpen ? 'w-80' : 'w-0 lg:w-80'} overflow-hidden`}>
+        <div className="p-12 flex items-center justify-between">
+          <div className="flex items-center space-x-4 group cursor-pointer">
+            <ArogyaLogo className="w-14 h-14 group-hover:rotate-12 transition-transform" color="#4ade80" />
+            <div>
+               <div className="font-black text-3xl tracking-tighter text-white">AS.</div>
+               <div className="text-[8px] font-black text-slate-500 tracking-[0.4em] uppercase">Rural Intelligence</div>
+            </div>
           </div>
-          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-3 text-slate-500 hover:text-white transition-colors">
+          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-4 text-slate-500 hover:text-white transition-colors bg-white/5 rounded-2xl">
             <X size={24} />
           </button>
         </div>
         
-        <div className="flex-1 space-y-4 px-6 mt-10 font-black uppercase tracking-widest text-[10px]">
-          <button onClick={() => { setActiveView('DASH'); setSelectedCaseId(null); }} className={`w-full flex items-center p-5 rounded-3xl transition-all ${activeView === 'DASH' ? 'bg-blue-600 text-white shadow-xl' : 'hover:bg-slate-800 text-slate-500'}`}><Home className="mr-5 w-5 h-5" /><span>Dashboard</span></button>
-          <button onClick={() => setActiveView('MAP')} className={`w-full flex items-center p-5 rounded-3xl transition-all ${activeView === 'MAP' ? 'bg-red-600 text-white shadow-xl' : 'hover:bg-slate-800 text-slate-500'}`}><MapIcon className="mr-5 w-5 h-5" /><span>Outbreak Heatmap</span></button>
-          <button onClick={() => setActiveView('STOCK')} className={`w-full flex items-center p-5 rounded-3xl transition-all ${activeView === 'STOCK' ? 'bg-orange-600 text-white shadow-xl' : 'hover:bg-slate-800 text-slate-500'}`}><Package className="mr-5 w-5 h-5" /><span>PHC Inventory</span></button>
+        <div className="flex-1 space-y-4 px-8 mt-12 font-black uppercase tracking-[0.2em] text-[10px]">
+          <button onClick={() => { setActiveView('DASH'); setSelectedCaseId(null); }} className={`w-full flex items-center p-6 rounded-[2rem] transition-all duration-300 ${activeView === 'DASH' ? 'bg-blue-600 text-white shadow-2xl' : 'hover:bg-white/5 text-slate-500'}`}><Home className="mr-6 w-6 h-6" /><span>Home Portal</span></button>
+          <button onClick={() => setActiveView('MAP')} className={`w-full flex items-center p-6 rounded-[2rem] transition-all duration-300 ${activeView === 'MAP' ? 'bg-red-600 text-white shadow-2xl' : 'hover:bg-white/5 text-slate-500'}`}><MapIcon className="mr-6 w-6 h-6" /><span>Disease Monitoring</span></button>
+          <button onClick={() => setActiveView('STOCK')} className={`w-full flex items-center p-6 rounded-[2rem] transition-all duration-300 ${activeView === 'STOCK' ? 'bg-orange-600 text-white shadow-2xl' : 'hover:bg-white/5 text-slate-500'}`}><Package className="mr-6 w-6 h-6" /><span>Supply Chain</span></button>
+          <button className="w-full flex items-center p-6 rounded-[2rem] hover:bg-white/5 text-slate-500 transition-all duration-300"><BarChart3 className="mr-6 w-6 h-6" /><span>Health Analytics</span></button>
         </div>
         
-        <div className="p-10 mt-auto border-t border-slate-800/50">
-          <button onClick={onExit} className="w-full text-left p-4 text-slate-500 hover:text-red-400 transition-colors text-[10px] font-black uppercase tracking-[0.2em] flex items-center">
-             <ArrowRight className="w-5 h-5 mr-5 rotate-180" /> Logout Portal
+        <div className="p-12 mt-auto border-t border-white/5 bg-black/20">
+          <button onClick={onExit} className="w-full text-left p-6 text-slate-600 hover:text-red-400 transition-colors text-[10px] font-black uppercase tracking-[0.3em] flex items-center group">
+             <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center mr-6 group-hover:bg-red-500/10 group-hover:text-red-400 transition-all"><ArrowRight className="w-5 h-5 rotate-180" /></div>
+             Sign Out
           </button>
         </div>
       </nav>
 
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-72 transition-all duration-500">
-        <header className="h-24 bg-white/70 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-6 lg:px-12 sticky top-0 z-40">
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-80 transition-all duration-700 ease-in-out">
+        <header className="h-28 bg-white/80 backdrop-blur-3xl border-b border-slate-100 flex items-center justify-between px-10 lg:px-16 sticky top-0 z-40">
           <div className="flex items-center">
             {!isSidebarOpen && (
-              <button onClick={() => setIsSidebarOpen(true)} className="mr-6 lg:hidden p-3 text-slate-600 hover:bg-slate-100 rounded-2xl transition-all">
-                <Menu size={24} />
+              <button onClick={() => setIsSidebarOpen(true)} className="mr-8 lg:hidden p-4 text-slate-600 hover:bg-slate-50 rounded-2xl transition-all shadow-sm">
+                <Menu size={28} />
               </button>
             )}
             {activeView !== 'DASH' && (
-              <button onClick={() => { setActiveView('DASH'); setSelectedCaseId(null); }} className="mr-6 p-3 text-slate-400 hover:text-slate-900 bg-slate-50 rounded-2xl transition-all active:scale-90">
-                <ArrowLeft size={24} />
+              <button onClick={() => { setActiveView('DASH'); setSelectedCaseId(null); }} className="mr-8 p-4 text-slate-400 hover:text-slate-900 bg-slate-50 rounded-2xl transition-all active:scale-90 shadow-sm border border-slate-100">
+                <ArrowLeft size={28} />
               </button>
             )}
             <div>
-              <h1 className="font-black text-2xl lg:text-3xl text-slate-900 tracking-tighter leading-none">
-                {activeView === 'CASE' ? 'Patient Consultation' : activeView === 'MAP' ? 'Surveillance Heatmap' : activeView === 'STOCK' ? 'Inventory Control' : 'Arogya Swarm Doctor'}
+              <h1 className="font-black text-3xl lg:text-4xl text-slate-900 tracking-tighter leading-none">
+                {activeView === 'CASE' ? 'Patient Review' : activeView === 'MAP' ? 'Disease Heatmap' : activeView === 'STOCK' ? 'PHC Inventory' : 'Arogya Swarm Doctor'}
               </h1>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em] mt-2 ml-0.5">District West Primary Health Center</p>
+              <div className="flex items-center mt-3 ml-0.5 space-x-3">
+                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live System Status: Normal</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4 lg:space-x-6">
-            <div className="hidden md:flex relative group">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-all" />
-              <input type="text" placeholder="Patient search..." className="bg-slate-100 border-2 border-transparent focus:border-blue-500/20 focus:bg-white pl-14 pr-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest w-64 lg:w-80 outline-none transition-all" />
-            </div>
-            <button className="relative p-4 bg-slate-50 rounded-2xl text-slate-600 hover:bg-slate-100 transition-all active:scale-95">
-              <Bell size={20} />
-              <span className="absolute top-3.5 right-3.5 w-3 h-3 bg-red-500 border-4 border-white rounded-full"></span>
+          <div className="flex items-center space-x-6">
+            <button className="relative p-3 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-100 transition-all">
+              <Bell size={24} />
+              <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
             </button>
+            <div className="hidden sm:block text-right">
+              <p className="text-xs font-black text-slate-900 leading-none">Dr. Sharma</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">District Hospital</p>
+            </div>
+            <div className="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black shadow-xl">DS</div>
           </div>
         </header>
 
-        <main className="flex-1">
+        <main className="flex-1 overflow-y-auto">
           {activeView === 'DASH' && renderDashboard()}
           {activeView === 'CASE' && renderCaseDetail()}
-          {activeView === 'MAP' && renderMap()}
-          {activeView === 'STOCK' && renderStockDashboard()}
+          {(activeView === 'MAP' || activeView === 'STOCK') && (
+            <div className="p-20 text-center space-y-6">
+              <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-300">
+                {activeView === 'MAP' ? <MapIcon size={48} /> : <Package size={48} />}
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-slate-900">{activeView === 'MAP' ? 'Disease Heatmap' : 'PHC Inventory'}</h3>
+                <p className="text-slate-500 mt-2 font-bold uppercase tracking-widest text-xs">Module under maintenance / development</p>
+              </div>
+              <Button onClick={() => setActiveView('DASH')} variant="secondary" className="w-auto px-10 rounded-full">Return to Dashboard</Button>
+            </div>
+          )}
         </main>
       </div>
-
-      {isSidebarOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
-      )}
     </div>
   );
 };

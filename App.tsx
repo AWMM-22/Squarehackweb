@@ -4,9 +4,10 @@ import { UserRole } from './types';
 import AshaApp from './screens/AshaApp';
 import DoctorApp from './screens/DoctorApp';
 import PatientApp from './screens/PatientApp';
-import { UserCircle2, Stethoscope, Users, Globe, Lock, Phone, User, Fingerprint } from 'lucide-react';
+import { UserCircle2, Stethoscope, Users, Globe, Lock, Phone, User, Fingerprint, Loader2, AlertCircle } from 'lucide-react';
 import { ArogyaLogo } from './components/Logo';
 import { Button } from './components/UI';
+import { checkUserCredentials, createUserProfile } from './services/dataService';
 
 const SideSlideText: React.FC<{ text: string; delayOffset?: number; isOut?: boolean }> = ({ text, delayOffset = 0, isOut = false }) => {
   const chars = text.split('');
@@ -130,29 +131,66 @@ const RoleSelection: React.FC<{ onSelect: (role: UserRole) => void; lang: 'hi' |
   </div>
 );
 
-const Login: React.FC<{ role: UserRole; onLogin: () => void; onBack: () => void; lang: 'hi' | 'en' }> = ({ role, onLogin, onBack, lang }) => {
-  const [formData, setFormData] = useState({ id: '', pin: '', phone: '' });
+const Login: React.FC<{ role: UserRole; onLogin: (user: any) => void; onBack: () => void; lang: 'hi' | 'en' }> = ({ role, onLogin, onBack, lang }) => {
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({ id: '', pin: '', phone: '', name: '' });
   
   const roleInfo = {
     [UserRole.ASHA]: { 
-      title: lang === 'hi' ? 'आशा कार्यकर्ता लॉगिन' : 'ASHA Worker Login',
+      title: lang === 'hi' ? 'आशा कार्यकर्ता' : 'ASHA Worker',
       icon: <Users className="text-green-600" />,
-      fields: ['id', 'pin'],
-      placeholders: { id: lang === 'hi' ? 'ASHA ID लिखें' : 'Enter ASHA ID', pin: lang === 'hi' ? 'पिन लिखें' : 'Enter PIN' }
+      color: 'bg-green-600',
+      idLabel: lang === 'hi' ? 'ASHA ID' : 'ASHA ID'
     },
     [UserRole.DOCTOR]: { 
-      title: lang === 'hi' ? 'डॉक्टर लॉगिन' : 'Doctor Login',
+      title: lang === 'hi' ? 'डॉक्टर' : 'Doctor',
       icon: <Stethoscope className="text-blue-600" />,
-      fields: ['id', 'pin'],
-      placeholders: { id: lang === 'hi' ? 'पंजीकरण संख्या' : 'Registration No.', pin: lang === 'hi' ? 'पासवर्ड' : 'Password' }
+      color: 'bg-blue-600',
+      idLabel: lang === 'hi' ? 'पंजीकरण संख्या' : 'Registration No.'
     },
     [UserRole.PATIENT]: { 
-      title: lang === 'hi' ? 'मरीज लॉगिन' : 'Patient Login',
+      title: lang === 'hi' ? 'मरीज / परिवार' : 'Patient / Family',
       icon: <UserCircle2 className="text-orange-600" />,
-      fields: ['phone'],
-      placeholders: { phone: lang === 'hi' ? 'मोबाइल नंबर लिखें' : 'Enter Mobile Number' }
+      color: 'bg-orange-600',
+      idLabel: lang === 'hi' ? 'मोबाइल नंबर' : 'Mobile Number'
     },
   }[role];
+
+  const handleAuth = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      if (isSignUp) {
+        // Validation
+        if (!formData.name) throw new Error("Please enter your name");
+        const uid = role === UserRole.PATIENT ? formData.phone : formData.id;
+        if (!uid) throw new Error(`Please enter ${roleInfo.idLabel}`);
+        
+        const newProfile = await createUserProfile({
+          uid,
+          name: formData.name,
+          role,
+          pin: role !== UserRole.PATIENT ? formData.pin : undefined,
+          phone: role === UserRole.PATIENT ? formData.phone : undefined
+        });
+        onLogin({ id: newProfile.id, name: formData.name, role });
+      } else {
+        const uid = role === UserRole.PATIENT ? formData.phone : formData.id;
+        const user = await checkUserCredentials(role, uid, role !== UserRole.PATIENT ? formData.pin : undefined);
+        if (user) {
+          onLogin(user);
+        } else {
+          throw new Error("Invalid credentials or user not found");
+        }
+      }
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 animate-in fade-in slide-in-from-bottom-4">
@@ -165,62 +203,90 @@ const Login: React.FC<{ role: UserRole; onLogin: () => void; onBack: () => void;
           <div className="w-20 h-20 mx-auto rounded-[1.5rem] bg-slate-50 flex items-center justify-center shadow-inner">
             {roleInfo.icon}
           </div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{roleInfo.title}</h2>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+            {isSignUp ? (lang === 'hi' ? 'नया पंजीकरण' : 'New Registration') : `${roleInfo.title} ${lang === 'hi' ? 'लॉगिन' : 'Login'}`}
+          </h2>
         </div>
 
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-2xl flex items-center space-x-3 text-sm font-bold animate-in shake duration-300">
+            <AlertCircle size={20} />
+            <span>{error}</span>
+          </div>
+        )}
+
         <div className="space-y-4">
-          {roleInfo.fields.includes('id') && (
+          {isSignUp && (
             <div className="relative">
               <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input 
                 type="text" 
-                placeholder={roleInfo.placeholders.id} 
-                className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-green-500/20"
-                value={formData.id}
-                onChange={e => setFormData({...formData, id: e.target.value})}
+                placeholder={lang === 'hi' ? 'अपना नाम लिखें' : 'Enter your name'} 
+                className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-slate-200"
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
               />
             </div>
           )}
-          {roleInfo.fields.includes('phone') && (
+
+          {role !== UserRole.PATIENT ? (
+            <>
+              <div className="relative">
+                <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input 
+                  type="text" 
+                  placeholder={roleInfo.idLabel} 
+                  className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-slate-200"
+                  value={formData.id}
+                  onChange={e => setFormData({...formData, id: e.target.value})}
+                />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input 
+                  type="password" 
+                  placeholder={lang === 'hi' ? 'पिन लिखें' : 'Enter PIN'} 
+                  className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-slate-200"
+                  value={formData.pin}
+                  onChange={e => setFormData({...formData, pin: e.target.value})}
+                />
+              </div>
+            </>
+          ) : (
             <div className="relative">
               <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input 
                 type="tel" 
-                placeholder={roleInfo.placeholders.phone} 
-                className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-orange-500/20"
+                placeholder={roleInfo.idLabel} 
+                className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-slate-200"
                 value={formData.phone}
                 onChange={e => setFormData({...formData, phone: e.target.value})}
               />
             </div>
           )}
-          {roleInfo.fields.includes('pin') && (
-            <div className="relative">
-              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-              <input 
-                type="password" 
-                placeholder={roleInfo.placeholders.pin} 
-                className="w-full bg-slate-50 p-5 pl-14 rounded-2xl border-none font-bold outline-none focus:ring-2 focus:ring-blue-500/20"
-                value={formData.pin}
-                onChange={e => setFormData({...formData, pin: e.target.value})}
-              />
-            </div>
-          )}
         </div>
 
-        {role === UserRole.ASHA && (
-          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex items-center justify-center space-x-4 cursor-pointer active:scale-95 transition-all">
-            <Fingerprint className="text-green-600" size={32} />
-            <p className="text-xs font-black text-slate-600 uppercase tracking-widest">{lang === 'hi' ? 'फिंगरप्रिंट का उपयोग करें' : 'Use Fingerprint'}</p>
-          </div>
-        )}
-
-        <Button onClick={onLogin} variant={role === UserRole.ASHA ? 'primary' : role === UserRole.DOCTOR ? 'info' : 'warning'} className="py-5 rounded-2xl shadow-xl">
-          {lang === 'hi' ? 'लॉगिन करें' : 'Login'}
+        <Button 
+          onClick={handleAuth} 
+          variant={role === UserRole.ASHA ? 'primary' : role === UserRole.DOCTOR ? 'info' : 'warning'} 
+          className="py-5 rounded-2xl shadow-xl"
+          disabled={loading}
+        >
+          {loading ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            isSignUp ? (lang === 'hi' ? 'रजिस्टर करें' : 'Sign Up') : (lang === 'hi' ? 'लॉगिन करें' : 'Login')
+          )}
         </Button>
 
-        <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest">
-          {lang === 'hi' ? 'क्या आप लॉग इन नहीं कर पा रहे हैं? सहायता लें' : 'Trouble logging in? Get Help'}
-        </p>
+        <div className="text-center">
+          <button 
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition-colors"
+          >
+            {isSignUp ? (lang === 'hi' ? 'पहले से खाता है? लॉगिन करें' : 'Already have an account? Login') : (lang === 'hi' ? 'नया खाता बनाएं' : 'Don\'t have an account? Sign Up')}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -228,6 +294,7 @@ const Login: React.FC<{ role: UserRole; onLogin: () => void; onBack: () => void;
 
 const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | null>(null);
+  const [user, setUser] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
@@ -253,16 +320,26 @@ const App: React.FC = () => {
   }
 
   if (!isLoggedIn) {
-    return <Login role={role} onLogin={() => setIsLoggedIn(true)} onBack={() => setRole(null)} lang={lang} />;
+    return (
+      <Login 
+        role={role} 
+        onLogin={(userData) => { 
+          setUser(userData);
+          setIsLoggedIn(true); 
+        }} 
+        onBack={() => setRole(null)} 
+        lang={lang} 
+      />
+    );
   }
 
   return (
     <div className="min-h-screen relative overflow-x-hidden selection:bg-green-100">
       <div className={`fixed top-0 left-0 right-0 h-1.5 z-[110] transition-colors ${isOnline ? 'bg-green-500' : 'bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]'}`} />
       
-      {role === UserRole.ASHA && <AshaApp onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
-      {role === UserRole.DOCTOR && <DoctorApp onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
-      {role === UserRole.PATIENT && <PatientApp onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
+      {role === UserRole.ASHA && <AshaApp user={user} onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
+      {role === UserRole.DOCTOR && <DoctorApp user={user} onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
+      {role === UserRole.PATIENT && <PatientApp user={user} onExit={() => { setIsLoggedIn(false); setRole(null); }} />}
       
       {!isOnline && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-900/95 backdrop-blur-xl text-white px-8 py-3 rounded-full text-sm font-bold flex items-center shadow-2xl z-[110] border border-gray-700/50">
