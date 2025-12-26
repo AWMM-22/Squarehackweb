@@ -1,0 +1,8 @@
+{
+  "name": "Health Sahayak - Rural Health Assistant",
+  "description": "An offline-first, AI-powered rural health assistant designed for ASHA workers, doctors, and rural families in India, featuring voice-first navigation and low-literacy-friendly UI.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
