@@ -6,7 +6,7 @@ import {
   Stethoscope, FileText, Apple, Bell,
   ChevronRight, Mic, CheckCircle2, UserPlus, X, Info, Home,
   User, Activity, BookOpen, UserCircle, Plus, Hash, Users2,
-  Volume2, Loader2, AlertCircle, PhoneCall, MessageSquare
+  Volume2, Loader2, AlertCircle, PhoneCall, MessageSquare, Pill
 } from 'lucide-react';
 import { 
   getNutritionAdvice, 
@@ -332,19 +332,41 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
       {drResponses.length > 0 && (
         <section className="px-1">
           <h3 className="font-black text-slate-400 uppercase text-[9px] tracking-widest mb-3">Advice from Doctor</h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {drResponses.map(res => (
-              <Card key={res.id} className="p-5 bg-blue-600 text-white rounded-2xl shadow-lg border-none animate-in zoom-in-95">
-                <div className="flex items-center space-x-3 mb-2">
-                   <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md"><Stethoscope size={16} /></div>
-                   <p className="text-[9px] font-black uppercase tracking-widest">From {res.doctor_name}</p>
+              <Card key={res.id} className="p-5 bg-white rounded-2xl shadow-lg border-2 border-blue-100 animate-in zoom-in-95 overflow-hidden">
+                <div className="flex items-center space-x-3 mb-4">
+                   <div className="bg-blue-600 p-2 rounded-lg text-white shadow-md shadow-blue-100"><Stethoscope size={18} /></div>
+                   <div>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Assessed by</p>
+                    <p className="text-sm font-black text-slate-900 leading-none">Dr. {res.doctor_name}</p>
+                   </div>
                 </div>
-                <p className="font-bold text-base leading-tight">{res.doctor_response}</p>
+                
+                {res.doctor_response && (
+                  <div className="mb-4 space-y-1">
+                    <p className="text-[8px] font-black text-blue-500 uppercase tracking-widest flex items-center">
+                      <MessageSquare size={10} className="mr-1" /> Notes & Advice
+                    </p>
+                    <p className="font-bold text-base text-slate-700 leading-tight bg-slate-50 p-3 rounded-xl border border-slate-100 italic">"{res.doctor_response}"</p>
+                  </div>
+                )}
+
+                {res.doctor_prescription && (
+                  <div className="space-y-1 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50 relative">
+                    <div className="absolute top-2 right-3 opacity-10"><Pill size={40} /></div>
+                    <p className="text-[8px] font-black text-blue-600 uppercase tracking-widest flex items-center mb-1">
+                      <Pill size={10} className="mr-1" /> Prescription Details
+                    </p>
+                    <p className="font-black text-base text-blue-900 leading-snug whitespace-pre-wrap">{res.doctor_prescription}</p>
+                  </div>
+                )}
+
                 <button 
-                  onClick={() => speak(res.doctor_response!, res.doctor_response!)} 
-                  className="mt-4 bg-white/10 hover:bg-white/20 active:scale-95 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center transition-all"
+                  onClick={() => speakText(`Advice from Doctor ${res.doctor_name}. Notes: ${res.doctor_response}. Prescription: ${res.doctor_prescription}`)} 
+                  className="mt-4 w-full bg-slate-900 hover:bg-black text-white active:scale-[0.98] px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center transition-all shadow-md shadow-slate-100"
                 >
-                  <Volume2 size={14} className="mr-2" /> Play Advice
+                  <Volume2 size={16} className="mr-2" /> Play Audio Advice
                 </button>
               </Card>
             ))}
@@ -426,6 +448,15 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
       </button>
     </div>
   );
+
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const renderConsultation = (mode: 'SYMPTOMS' | 'NUTRITION' | 'DOCTOR_CONSULT') => (
     <div className="p-4 flex-1 flex flex-col justify-center animate-in fade-in duration-500 pb-28 min-h-[80vh]">

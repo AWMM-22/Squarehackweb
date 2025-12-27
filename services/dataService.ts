@@ -158,6 +158,7 @@ export interface DoctorInquiry {
   follow_up_answers: string[];
   status: 'PENDING' | 'RESPONDED';
   doctor_response?: string;
+  doctor_prescription?: string;
   doctor_name?: string;
   timestamp: string;
 }
@@ -187,13 +188,24 @@ export const subscribeToInquiries = (callback: (inquiries: DoctorInquiry[]) => v
   return () => clearInterval(poll);
 };
 
-export const respondToInquiry = async (id: string, response: string, doctorName: string) => {
+export const respondToInquiry = async (id: string, response: string, prescription: string, doctorName: string) => {
   const items = getLocalData<DoctorInquiry>(MOCK_INQUIRIES_KEY);
-  const updated = items.map(item => item.id === id ? { ...item, status: 'RESPONDED' as const, doctor_response: response, doctor_name: doctorName } : item);
+  const updated = items.map(item => item.id === id ? { 
+    ...item, 
+    status: 'RESPONDED' as const, 
+    doctor_response: response, 
+    doctor_prescription: prescription,
+    doctor_name: doctorName 
+  } : item);
   localStorage.setItem(MOCK_INQUIRIES_KEY, JSON.stringify(updated));
   
   try {
-    await supabase.from('doctor_inquiries').update({ status: 'RESPONDED', doctor_response: response, doctor_name: doctorName }).eq('id', id);
+    await supabase.from('doctor_inquiries').update({ 
+      status: 'RESPONDED', 
+      doctor_response: response, 
+      doctor_prescription: prescription,
+      doctor_name: doctorName 
+    }).eq('id', id);
   } catch (e) {}
 };
 
