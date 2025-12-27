@@ -1,12 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header, Card, Button } from '../components/UI';
 import { 
   Users, Stethoscope, Bell, ArrowRight,
   MessageSquare, Send, Volume2, User, X, CheckCircle2, Clock, Activity, Calendar,
-  Loader2, Home, FileText
+  Loader2, Home, FileText, Mic
 } from 'lucide-react';
 import { subscribeToInquiries, respondToInquiry, DoctorInquiry } from '../services/dataService';
+
+const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
 const DoctorApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> = ({ onExit, user, lang }) => {
   const [activeTab, setActiveTab] = useState<'HOME' | 'INQUIRIES' | 'DETAIL'>('HOME');
@@ -15,11 +17,50 @@ const DoctorApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> 
   const [responseMsg, setResponseMsg] = useState('');
   const [prescriptionMsg, setPrescriptionMsg] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [isListeningForNote, setIsListeningForNote] = useState(false);
+  const [isListeningForPrescription, setIsListeningForPrescription] = useState(false);
+
+  const recognition = useRef<any>(null);
 
   useEffect(() => {
     const unsub = subscribeToInquiries(setInquiries);
     return unsub;
   }, []);
+
+  const initRecognition = (targetField: 'note' | 'prescription') => {
+    if (SpeechRecognition) {
+      const rec = new SpeechRecognition();
+      rec.continuous = false;
+      rec.interimResults = false;
+      rec.lang = lang === 'hi' ? 'hi-IN' : 'en-US';
+      
+      rec.onstart = () => {
+        if (targetField === 'note') setIsListeningForNote(true);
+        else setIsListeningForPrescription(true);
+      };
+      
+      rec.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        if (targetField === 'note') setResponseMsg(prev => prev + ' ' + transcript);
+        else setPrescriptionMsg(prev => prev + ' ' + transcript);
+      };
+      
+      rec.onend = () => {
+        setIsListeningForNote(false);
+        setIsListeningForPrescription(false);
+      };
+
+      rec.onerror = () => {
+        setIsListeningForNote(false);
+        setIsListeningForPrescription(false);
+      };
+
+      recognition.current = rec;
+      try { recognition.current.start(); } catch(e) {}
+    } else {
+      alert("Speech recognition not supported in this browser.");
+    }
+  };
 
   const handleRespond = async () => {
     if (!selectedInquiry || (!responseMsg && !prescriptionMsg)) return;
@@ -148,7 +189,7 @@ const DoctorApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> 
                   onClick={() => speakText(selectedInquiry.problem_desc)}
                   className="flex items-center text-blue-600 font-black text-[9px] uppercase tracking-widest hover:bg-blue-100/50 px-2 py-1.5 rounded-lg transition-colors"
                  >
-                   <Volume2 size={14} className="mr-2" /> Voice Audio
+                   <Volume2 size={14} className="mr-2" /> Play Voice Input
                  </button>
               </div>
 
@@ -166,9 +207,17 @@ const DoctorApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> 
 
            <div className="space-y-5 pt-4 border-t border-slate-50">
               <div className="space-y-2">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Notes / Medical Advice</p>
+                <div className="flex justify-between items-center">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Notes / Medical Advice</p>
+                  <button 
+                    onClick={() => initRecognition('note')} 
+                    className={`p-2 rounded-lg transition-all ${isListeningForNote ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-50 text-slate-400 hover:text-blue-600'}`}
+                  >
+                    <Mic size={14} />
+                  </button>
+                </div>
                 <textarea 
-                  placeholder="Type advice or notes here..." 
+                  placeholder="Type or use mic for notes..." 
                   className="w-full bg-slate-50 p-4 rounded-xl border border-slate-100 font-bold text-sm outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
                   rows={3}
                   value={responseMsg}
@@ -177,9 +226,17 @@ const DoctorApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> 
               </div>
 
               <div className="space-y-2">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Prescription / Medication Details</p>
+                <div className="flex justify-between items-center">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Prescription / Medication Details</p>
+                  <button 
+                    onClick={() => initRecognition('prescription')} 
+                    className={`p-2 rounded-lg transition-all ${isListeningForPrescription ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-50 text-blue-400 hover:text-blue-600'}`}
+                  >
+                    <Mic size={14} />
+                  </button>
+                </div>
                 <textarea 
-                  placeholder="Medicine, Dosage, Duration..." 
+                  placeholder="Medicine, Dosage, Duration (Voice input supported)..." 
                   className="w-full bg-blue-50/30 p-4 rounded-xl border border-blue-100 font-bold text-sm outline-none focus:ring-2 focus:ring-blue-500/20 resize-none text-blue-900"
                   rows={3}
                   value={prescriptionMsg}

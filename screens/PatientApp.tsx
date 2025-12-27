@@ -198,6 +198,15 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
     }
   };
 
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const startListening = () => {
     if (!SpeechRecognition) {
       alert(lang === 'hi' ? "आपका ब्राउज़र वॉयस इनपुट का समर्थन नहीं करता है।" : "Your browser does not support voice input.");
@@ -322,7 +331,7 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">
             {lang === 'hi' ? `नमस्ते ${user?.name?.split(' ')[0]}!` : `Hello ${user?.name?.split(' ')[0]}!`} 🙏
           </h2>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Village Rampur • Ward 3</p>
+          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Health Assistant Active</p>
         </div>
         <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-100 active:scale-90 transition-all cursor-pointer">
           <Bell size={20} className="text-slate-400" />
@@ -366,7 +375,7 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
                   onClick={() => speakText(`Advice from Doctor ${res.doctor_name}. Notes: ${res.doctor_response}. Prescription: ${res.doctor_prescription}`)} 
                   className="mt-4 w-full bg-slate-900 hover:bg-black text-white active:scale-[0.98] px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center transition-all shadow-md shadow-slate-100"
                 >
-                  <Volume2 size={16} className="mr-2" /> Play Audio Advice
+                  <Volume2 size={16} className="mr-2" /> Listen to Doctor's Voice
                 </button>
               </Card>
             ))}
@@ -448,15 +457,6 @@ const PatientApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }>
       </button>
     </div>
   );
-
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   const renderConsultation = (mode: 'SYMPTOMS' | 'NUTRITION' | 'DOCTOR_CONSULT') => (
     <div className="p-4 flex-1 flex flex-col justify-center animate-in fade-in duration-500 pb-28 min-h-[80vh]">

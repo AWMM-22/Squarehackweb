@@ -2,16 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { RiskLevel } from "../types";
 
-// Get API key from Vite environment variables
-const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || "";
-
-// Only initialize if API key is available
-let ai: GoogleGenAI | null = null;
-if (apiKey) {
-  ai = new GoogleGenAI({ apiKey });
-} else {
-  console.warn("Gemini API key not configured. AI features will use fallback responses.");
-}
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function analyzeSymptoms(symptoms: string[], age: number, gender: string, conversationHistory: string[], lang: 'hi' | 'en') {
   try {
