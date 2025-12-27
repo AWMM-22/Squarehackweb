@@ -2,9 +2,28 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { RiskLevel } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Get API key from Vite environment variables
+const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || "";
+
+// Only initialize if API key is available
+let ai: GoogleGenAI | null = null;
+if (apiKey) {
+  ai = new GoogleGenAI({ apiKey });
+} else {
+  console.warn("Gemini API key not configured. AI features will use fallback responses.");
+}
 
 export async function analyzeSymptoms(symptoms: string[], age: number, gender: string) {
+  // If no API key, return fallback immediately
+  if (!ai) {
+    return {
+      riskLevel: symptoms.length >= 3 ? "HIGH" : symptoms.length >= 2 ? "MEDIUM" : "LOW",
+      diagnosis: "Common Viral Infection (सामान्य वायरल संक्रमण)",
+      recommendations: ["Rest and hydration", "Monitor temperature", "Consult doctor if symptoms worsen"],
+      confidence: 0.6
+    };
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -53,6 +72,11 @@ export async function analyzeSymptoms(symptoms: string[], age: number, gender: s
 }
 
 export async function getNutritionAdvice(person: string, age: number) {
+  // If no API key, return fallback immediately
+  if (!ai) {
+    return "हर दिन ताज़ा फल और सब्जियां खाएं। Eat fresh fruits and vegetables every day.";
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
