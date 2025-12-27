@@ -92,7 +92,6 @@ const AshaApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> = 
   const finishAssessment = async (finalAnswers: any) => {
     setIsAnalyzing(true);
     const symptoms = Object.keys(finalAnswers).filter(k => finalAnswers[k]);
-    // Fixed: Added lang as the 5th argument to resolve the TypeScript error
     const result = await analyzeSymptoms(symptoms, 28, 'F', [], lang);
     
     await saveAssessment({
@@ -326,7 +325,9 @@ const AshaApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> = 
              </div>
           </div>
           <div className="space-y-4">
-             <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">AI Analyzing...</h2>
+             <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">
+               {lang === 'hi' ? 'आरोग्य स्वर्ण सोच रहा है...' : 'Arogya Swarm Thinking...'}
+             </h2>
              <p className="text-slate-400 font-bold text-sm leading-relaxed px-4 italic">Please wait while the Arogya AI generates clinical recommendations based on rural protocols.</p>
           </div>
         </div>
@@ -384,28 +385,28 @@ const AshaApp: React.FC<{ onExit: () => void; user: any; lang: 'hi' | 'en' }> = 
            </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 w-full px-4 mb-12">
+        <div className="grid grid-cols-2 gap-6 w-full px-4 mb-12">
           <button 
             onClick={() => handleAnswer(true)} 
-            className="h-64 bg-green-600 text-white rounded-[4rem] font-black text-4xl shadow-2xl shadow-green-600/20 active:scale-95 transition-all flex flex-col items-center justify-center space-y-2"
+            className="h-44 bg-green-600 text-white rounded-[3rem] font-black text-3xl shadow-2xl shadow-green-600/20 active:scale-95 transition-all flex flex-col items-center justify-center space-y-2"
           >
             <span>YES</span>
-            <span className="text-xl opacity-60">हाँ</span>
+            <span className="text-lg opacity-60">हाँ</span>
           </button>
           <button 
             onClick={() => handleAnswer(false)} 
-            className="h-64 bg-red-600 text-white rounded-[4rem] font-black text-4xl shadow-2xl shadow-red-600/20 active:scale-95 transition-all flex flex-col items-center justify-center space-y-2"
+            className="h-44 bg-red-600 text-white rounded-[3rem] font-black text-3xl shadow-2xl shadow-red-600/20 active:scale-95 transition-all flex flex-col items-center justify-center space-y-2"
           >
             <span>NO</span>
-            <span className="text-xl opacity-60">नहीं</span>
+            <span className="text-lg opacity-60">नहीं</span>
           </button>
         </div>
 
         <div className="w-full px-8 space-y-4 mb-12">
            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-             <div className="h-full bg-slate-900 transition-all duration-500" style={{ width: `${((qIndex + 1) / 3) * 100}%` }} />
+             <div className="h-full bg-slate-900 transition-all duration-500" style={{ width: `${((qIndex + 1) / (qFlow.length || 1)) * 100}%` }} />
            </div>
-           <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest">Progress: {qIndex + 1} / 3</p>
+           <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest">Progress: {qIndex + 1} / {qFlow.length}</p>
         </div>
       </div>
     );

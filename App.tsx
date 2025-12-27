@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { UserRole } from './types';
 import AshaApp from './screens/AshaApp';
@@ -56,7 +55,8 @@ const RoleSelection: React.FC<{ onSelect: (role: UserRole) => void; lang: 'hi' |
             className={`w-full bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-${item.c}-600 hover:shadow-2xl hover:-translate-y-1 transition-all flex items-center group active:scale-95`}
           >
             <div className={`w-16 h-16 bg-${item.c}-50 rounded-2xl flex items-center justify-center group-hover:bg-${item.c}-600 group-hover:text-white transition-all`}>
-              {React.cloneElement(item.i as React.ReactElement, { size: 32 })}
+              {/* Fix: Cast to any to allow size property on Lucide icon component when cloning */}
+              {React.cloneElement(item.i as React.ReactElement<any>, { size: 32 })}
             </div>
             <div className="ml-6 text-left">
               <h2 className="text-2xl font-black text-slate-900 leading-tight">{item.t}</h2>
@@ -114,7 +114,8 @@ const Login: React.FC<{ role: UserRole; onLogin: (user: any) => void; onBack: ()
         </button>
         <div className="text-center space-y-4">
           <div className="w-20 h-20 mx-auto rounded-3xl bg-slate-50 flex items-center justify-center shadow-inner">
-            {React.cloneElement(roleInfo.icon as React.ReactElement, { size: 40 })}
+            {/* Fix: Cast to any to allow size property on Lucide icon component when cloning */}
+            {React.cloneElement(roleInfo.icon as React.ReactElement<any>, { size: 40 })}
           </div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">
             {isSignUp ? (lang === 'hi' ? 'नया पंजीकरण' : 'Sign Up') : (lang === 'hi' ? 'लॉगिन' : 'Login')}
