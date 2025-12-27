@@ -27,6 +27,16 @@ export interface Patient {
   conditions?: string[];
 }
 
+export interface FamilyMember {
+  id?: string;
+  parent_phone: string;
+  name: string;
+  age: number;
+  gender: string;
+  relation: string;
+  created_at?: string;
+}
+
 export interface Task {
   id: string;
   title: string;
