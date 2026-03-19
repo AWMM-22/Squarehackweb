@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --app-bg: #ecfdf5;
+  --surface: #ffffff;
+  --text-strong: #0f172a;
+  --text-soft: #64748b;
+  --accent: #0f766e;
+  --accent-soft: #ccfbf1;
+}
+
+body {
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
+  background: radial-gradient(120% 120% at 0% 0%, #dcfce7 0%, #ecfeff 45%, #fff7ed 100%);
+  color: var(--text-strong);
+}
+
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise-in {
+  animation: rise-in 0.45s ease-out;
+}
+
+.asha-hero {
+  background: radial-gradient(95% 160% at 8% 8%, #22c55e 0%, #0d9488 42%, #0f766e 100%);
+  box-shadow: 0 18px 46px -22px rgba(13, 148, 136, 0.55);
+}
+
+.soft-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fffb 100%);
+  border: 1px solid #d1fae5;
+  box-shadow: 0 14px 30px -24px rgba(13, 148, 136, 0.55);
+}
